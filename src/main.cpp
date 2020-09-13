@@ -100,6 +100,9 @@ int main() {
            */
 
 
+
+          // End of path planning code section
+
           msgJson["next_x"] = next_x_vals;
           msgJson["next_y"] = next_y_vals;
 
