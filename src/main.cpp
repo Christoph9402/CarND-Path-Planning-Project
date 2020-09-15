@@ -148,6 +148,28 @@ int main() {
               next_x_vals.push_back(previous_path_x[i]);
               next_y_vals.push_back(previous_path_y[i]);
           }
+          double target_x=30.0;
+          double target_y=s(target_x);
+          double target_distance=sqrt((target_x)*(target_x)+(target_y)*(target_y));
+          double x_add_on=0;
+
+          for(int i=1;i<=50-previous_path_x.size();i++){
+              double N=(target_distance/(0.02*max_speed/2.24));
+              double x_point=x_add_on+target_x/N;
+              double y_point=s(x_point);
+
+              double x_ref=x_point;
+              double y_ref=y_point;
+
+              x_point=(x_ref*cos(ref_yaw)-y_ref*sin(ref_yaw));
+              x_point +=ref_x;
+              y_point=(x_ref*sin(ref_yaw)-y_ref*cos(ref_yaw));
+              y_point +=y_ref;
+              next_x_vals.push_back(y_point);
+              next_y_vals.push_back(y_point);
+          }
+
+
           /*
           double dist_inc = 0.5;
           for (int i = 0; i < 50; ++i) {
