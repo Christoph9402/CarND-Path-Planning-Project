@@ -51,6 +51,7 @@ int main() {
     map_waypoints_dx.push_back(d_x);
     map_waypoints_dy.push_back(d_y);
   }
+  // define starting lane and maximum speed
 
   h.onMessage([&map_waypoints_x,&map_waypoints_y,&map_waypoints_s,
                &map_waypoints_dx,&map_waypoints_dy]
@@ -99,16 +100,69 @@ int main() {
            * TODO: define a path made up of (x,y) points that the car will visit
            *   sequentially every .02 seconds
            */
+          int previous_size=previous_path_x.size();
+          int lane=1;
+          double lane_width=4;
+          double max_speed = 50;
 
+          vector<double>points_path_x;
+          vector<double>points_path_y;
+          double ref_x = car_x;
+          double ref_y = car_y;
+          double ref_yaw = deg2rad(car_yaw);
+
+          if(previous_size<2){
+              double previous_car_x = car_x - cos(car_yaw);
+              double previous_car_y = car_y - sin(car_yaw);
+              points_path_x.push_back(previous_car_x);
+              points_path_x.push_back(car_x);
+              points_path_y.push_back(previous_car_y);
+              points_path_y.push_back(car_y);
+          }
+          else {
+              ref_x=previous_path_x[previous_size-1];
+              ref_y=previous_path_y[previous_size-1];
+              double previous_ref_x = previous_path_x[previous_size-2];
+              double previous_ref_y = previous_path_y[previous_size-2];
+              ref_yaw=atan2(ref_y-previous_ref_y,ref_x-previous_ref_x);
+              points_path_x.push_back(previous_ref_x);
+              points_path_x.push_back(ref_x);
+              points_path_y.push_back(previous_ref_y);
+              points_path_y.push_back(ref_y);
+          }
+          for(int i=0;i<3;i++){
+              vector<double> next_waypoint=getXY(car_s+30*(i+1),((lane_width/2)+lane_width*lane),map_waypoints_s,map_waypoints_x,map_waypoints_y);
+              points_path_x.push_back(next_waypoint[0]);
+              points_path_y.push_back(next_waypoint[1]);
+          }
+          for(int i=0;i<points_path_x.size();i++){
+              double shift_x=points_path_x[i]-ref_x;
+              double shift_y=points_path_y[i]-ref_y;
+              points_path_x[i]=(shift_x*cos(0-ref_yaw)-shift_y*sin(0-ref_yaw));
+              points_path_y[i]=(shift_x*sin(0-ref_yaw)-shift_y*cos(0-ref_yaw));
+          }
+          tk::spline s;
+          s.set_points(points_path_x,points_path_y);
+
+          for(int i=0;i<previous_path_x.size();i++){
+              next_x_vals.push_back(previous_path_x[i]);
+              next_y_vals.push_back(previous_path_y[i]);
+          }
+          /*
           double dist_inc = 0.5;
           for (int i = 0; i < 50; ++i) {
-
-
-            next_x_vals.push_back(car_x+(dist_inc*i)*cos(deg2rad(car_yaw)));
-            next_y_vals.push_back(car_y+(dist_inc*i)*sin(deg2rad(car_yaw)));
+              //calculate next values using Frenet coordinates
+              double next_s = car_s*(i+1)*dist_inc;
+              double next_d = 6;
+              //covert the net s and next  values to kartesian coordinates
+              vector<double> next_xy=getXY(next_s,next_d,map_waypoints_s,map_waypoints_x,map_waypoints_y);
+              // append next x and next y values to the vectors that make up the trajectory
+              next_x_vals.push_back(next_xy[0]);
+              next_y_vals.push_back(next_xy[1]);
           }
+           */
 
-          // End of path planning code section
+            //################################ End of path planning code section############################
 
           msgJson["next_x"] = next_x_vals;
           msgJson["next_y"] = next_y_vals;
