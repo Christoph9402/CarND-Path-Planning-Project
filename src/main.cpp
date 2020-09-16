@@ -91,10 +91,7 @@ int main() {
           //   of the road.
           auto sensor_fusion = j[1]["sensor_fusion"];
 
-          json msgJson;
 
-          vector<double> next_x_vals;
-          vector<double> next_y_vals;
 
           /**
            * TODO: define a path made up of (x,y) points that the car will visit
@@ -143,10 +140,12 @@ int main() {
           }
           tk::spline s;
           s.set_points(points_path_x,points_path_y);
+          vector<double> next_x_vals;
+          vector<double> next_y_vals;
 
           for(int i=0;i<previous_path_x.size();i++){
-              next_x_vals.push_back(previous_path_x[i]);
-              next_y_vals.push_back(previous_path_y[i]);
+            next_x_vals.push_back(previous_path_x[i]);
+            next_y_vals.push_back(previous_path_y[i]);
           }
           double target_x=30.0;
           double target_y=s(target_x);
@@ -155,21 +154,24 @@ int main() {
 
           for(int i=1;i<=50-previous_path_x.size();i++){
               double N=(target_distance/(0.02*max_speed/2.24));
-              double x_point=x_add_on+target_x/N;
+              double x_point=x_add_on+(target_x)/N;
               double y_point=s(x_point);
-
+              x_add_on=x_point;
               double x_ref=x_point;
               double y_ref=y_point;
 
               x_point=(x_ref*cos(ref_yaw)-y_ref*sin(ref_yaw));
               x_point +=ref_x;
               y_point=(x_ref*sin(ref_yaw)-y_ref*cos(ref_yaw));
-              y_point +=y_ref;
-              next_x_vals.push_back(y_point);
+              y_point +=ref_y;
+              next_x_vals.push_back(x_point);
               next_y_vals.push_back(y_point);
           }
-
-
+            json msgJson;
+            // Run Simulator
+            // mkdir build && cd build
+            // cmake .. && make
+            // ./path_planning
           /*
           double dist_inc = 0.5;
           for (int i = 0; i < 50; ++i) {
