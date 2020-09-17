@@ -100,7 +100,7 @@ int main() {
           int previous_size=previous_path_x.size();
           int lane=1;
           double lane_width=4;
-          double max_speed = 49.5;
+          double max_speed = 0;
 
           if(previous_size>0){
               car_s=end_path_s;
@@ -118,10 +118,17 @@ int main() {
 
                   check_car_s+=((double)previous_size*0.02*check_speed);
                   if((check_car_s>car_s)&&((check_car_s-car_s)<30)){
-                      max_speed=29.5;
+                      TooClose=true;
                   }
               }
           }
+          if (TooClose){
+              max_speed-=0.224;
+          }
+          else if(max_speed<49.5){
+              max_speed+=0.224;
+          }
+
 
           vector<double>points_path_x;
           vector<double>points_path_y;
@@ -260,7 +267,7 @@ int main() {
     std::cout << "Listening to port " << port << std::endl;
   } else {
     std::cerr << "Failed to listen to port" << std::endl;
-    return -1;
+    retur  -1;
   }
   
   h.run();
