@@ -126,7 +126,7 @@ int main() {
                     check_car_s += ((double) previous_size * 0.02 * check_speed);
 
                     if ((check_car_s > car_s) && ((check_car_s - car_s) < 30)) {
-                        max_speed=29.5;
+                        //max_speed=29.5;
                         TooClose = true;
                     }
                 }
@@ -238,7 +238,7 @@ int main() {
                 //}
 
 */
-
+                max_speed -= 0.35;
             }
             //If the vehicle in front is not too close to our vehicle and our car is to slow, increase speed until 49,5mph
             else if (max_speed < 49.5) {
