@@ -51,7 +51,7 @@ int main() {
     map_waypoints_dx.push_back(d_x);
     map_waypoints_dy.push_back(d_y);
   }
-  // define starting lane and maximum speed
+
 
   h.onMessage([&map_waypoints_x,&map_waypoints_y,&map_waypoints_s,
                &map_waypoints_dx,&map_waypoints_dy]
@@ -98,9 +98,11 @@ int main() {
              *   sequentially every .02 seconds
              */
             int previous_size = previous_path_x.size();
+
+            // define starting lane and maximum speed
             int lane = 1;
             double lane_width = 4;
-            double max_speed = 0;
+            double max_speed = 49.5;
 
             if (previous_size > 0) {
                 car_s = end_path_s;
@@ -110,6 +112,7 @@ int main() {
             bool LaneChangePossible0 = false;
             bool LaneChangePossible1 = false;
             bool LaneChangePossible2 = false;
+
             for (int i = 0; i < sensor_fusion.size(); i++) {
                 float d = sensor_fusion[i][6];
                 //Check, if car is in the same lane as ego vehicle
@@ -225,13 +228,13 @@ int main() {
                 }
 
                 // if the lane change is not possible because the lanes are not empty, check the gap sizes and reduce speed to avoid collision with vehicle in front
-                if ((LaneChangePossible0 = false) && (LaneChangePossible1 = false) && (LaneChangePossible2 = false)) {
-                    max_speed -= 0.35;
-                } else if ((LaneChangePossible0 = true) || (LaneChangePossible1 = true) || (LaneChangePossible2 = true)) {
-                    if (max_speed < 49.5) {
-                        max_speed += 0.35;
-                    }
-                }
+                //if ((LaneChangePossible0 = false) && (LaneChangePossible1 = false) && (LaneChangePossible2 = false)) {
+                //    max_speed -= 0.35;
+                //} else if ((LaneChangePossible0 = true) || (LaneChangePossible1 = true) || (LaneChangePossible2 = true)) {
+                //   if (max_speed < 49.5) {
+                //        max_speed += 0.35;
+                //    }
+                //}
 
 
             }
@@ -293,7 +296,7 @@ int main() {
               double shift_x=points_path_x[i]-ref_x;
               double shift_y=points_path_y[i]-ref_y;
               points_path_x[i]=(shift_x*cos(0-ref_yaw)-shift_y*sin(0-ref_yaw));
-              points_path_y[i]=(shift_x*sin(0-ref_yaw)-shift_y*cos(0-ref_yaw));
+              points_path_y[i]=(shift_x*sin(0-ref_yaw)+shift_y*cos(0-ref_yaw));
           }
           tk::spline s;
 
