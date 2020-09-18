@@ -126,12 +126,13 @@ int main() {
                     check_car_s += ((double) previous_size * 0.02 * check_speed);
 
                     if ((check_car_s > car_s) && ((check_car_s - car_s) < 30)) {
+                        max_speed=29.5;
                         TooClose = true;
                     }
                 }
             }
             if (TooClose) {
-
+/*
                 vector<double> VehiclesLane0Distance;
                 vector<double> VehiclesLane0Speed;
                 vector<double> Lane0Gaps;
@@ -179,7 +180,7 @@ int main() {
                             VehiclesLane2Speed.push_back(check_speed);
                         }
                     }
-                }
+                }*/
 /*
                 for (int i=0;i<(VehiclesLane0Distance.size()-1);i++){
                     double gap=abs(VehiclesLane0Distance[i+1]-VehiclesLane0Distance[i]);
@@ -200,7 +201,7 @@ int main() {
                     }
                 }
 */
-                // If a lane next to the lane our car is in is free, the lane change is possible
+    /*            // If a lane next to the lane our car is in is free, the lane change is possible
                 if ((lane == 0) && (VehiclesLane1Distance.size() == 0)) {
                     LaneChangePossible1 = true;
                     if (max_speed < 49.5) {
@@ -236,6 +237,7 @@ int main() {
                 //    }
                 //}
 
+*/
 
             }
             //If the vehicle in front is not too close to our vehicle and our car is to slow, increase speed until 49,5mph
