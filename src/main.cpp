@@ -51,9 +51,12 @@ int main() {
     map_waypoints_dx.push_back(d_x);
     map_waypoints_dy.push_back(d_y);
   }
+    int lane = 1;
+    //double lane_width = 4.0;
+    double max_speed = 0.0;
 
 
-  h.onMessage([&map_waypoints_x,&map_waypoints_y,&map_waypoints_s,
+  h.onMessage([&max_speed, &lane, &map_waypoints_x,&map_waypoints_y,&map_waypoints_s,
                &map_waypoints_dx,&map_waypoints_dy]
               (uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
                uWS::OpCode opCode) {
@@ -100,9 +103,6 @@ int main() {
             int previous_size = previous_path_x.size();
 
             // define starting lane and maximum speed
-            int lane = 1;
-            double lane_width = 4;
-            double max_speed = 49.5;
 
             if (previous_size > 0) {
                 car_s = end_path_s;
@@ -132,7 +132,7 @@ int main() {
                 }
             }
             if (TooClose) {
-/*
+
                 vector<double> VehiclesLane0Distance;
                 vector<double> VehiclesLane0Speed;
                 vector<double> Lane0Gaps;
@@ -180,7 +180,7 @@ int main() {
                             VehiclesLane2Speed.push_back(check_speed);
                         }
                     }
-                }*/
+                }
 /*
                 for (int i=0;i<(VehiclesLane0Distance.size()-1);i++){
                     double gap=abs(VehiclesLane0Distance[i+1]-VehiclesLane0Distance[i]);
@@ -201,7 +201,7 @@ int main() {
                     }
                 }
 */
-    /*            // If a lane next to the lane our car is in is free, the lane change is possible
+               // If a lane next to the lane our car is in is free, the lane change is possible
                 if ((lane == 0) && (VehiclesLane1Distance.size() == 0)) {
                     LaneChangePossible1 = true;
                     if (max_speed < 49.5) {
@@ -237,7 +237,7 @@ int main() {
                 //    }
                 //}
 
-*/
+
                 max_speed -= 0.35;
             }
             //If the vehicle in front is not too close to our vehicle and our car is to slow, increase speed until 49,5mph
