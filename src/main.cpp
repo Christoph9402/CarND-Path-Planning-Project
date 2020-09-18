@@ -107,27 +107,120 @@ int main() {
           }
 
           bool TooClose = false;
-
+          bool LaneChangePossible =false;
           for(int i=0;i<sensor_fusion.size();i++){
               float d=sensor_fusion[i][6];
+              //Check, if car is in the same lane as ego vehicle
               if (d<(2+4*lane+2) && d >(2+4*lane -2)){
+                  //speed and s value of the car
                   double vx = sensor_fusion[i][3];
                   double vy = sensor_fusion[i][4];
                   double check_speed = sqrt(vx*vx+vy*vy);
                   double check_car_s = sensor_fusion[i][5];
 
                   check_car_s+=((double)previous_size*0.02*check_speed);
+
                   if((check_car_s>car_s)&&((check_car_s-car_s)<30)){
                       TooClose=true;
+              }
+            }
+
+          }
+
+
+              if (TooClose) {
+                  vector<double> VehiclesLane0Distance;
+                  vector<double> VehiclesLane0Speed;
+                  vector<double> Lane0Gaps;
+                  vector<double> VehiclesLane1Distance;
+                  vector<double> VehiclesLane1Speed;
+                  vector<double> Lane1Gaps;
+                  vector<double> VehiclesLane2Distance;
+                  vector<double> VehiclesLane2Speed;
+                  vector<double> Lane2Gaps;
+                  for (int i = 0; i < sensor_fusion.size(); i++) {
+                      float d = sensor_fusion[i][6];
+
+                      if (d < (4) && d > (0)) {
+                          double vx = sensor_fusion[i][3];
+                          double vy = sensor_fusion[i][4];
+                          double check_speed = sqrt(vx * vx + vy * vy);
+                          double check_car_s = sensor_fusion[i][5];
+                          check_car_s += ((double) previous_size * 0.02 * check_speed);
+                          if (check_car_s < 50) {
+                              VehiclesLane0Distance.push_back(abs(check_car_s - car_s));
+                              VehiclesLane1Speed.push_back(check_speed);
+                          }
+
+
+                      } else if (d < (8) && d > (4)) {
+                          double vx = sensor_fusion[i][3];
+                          double vy = sensor_fusion[i][4];
+                          double check_speed = sqrt(vx * vx + vy * vy);
+                          double check_car_s = sensor_fusion[i][5];
+                          check_car_s += ((double) previous_size * 0.02 * check_speed);
+                          if (check_car_s < 50) {
+                              VehiclesLane1Distance.push_back(abs(check_car_s - car_s));
+                              VehiclesLane1Speed.push_back(check_speed);
+                          }
+
+                      } else if (d < (12) && d > (8)) {
+                          double vx = sensor_fusion[i][3];
+                          double vy = sensor_fusion[i][4];
+                          double check_speed = sqrt(vx * vx + vy * vy);
+                          double check_car_s = sensor_fusion[i][5];
+                          check_car_s += ((double) previous_size * 0.02 * check_speed);
+                          if (check_car_s < 50) {
+                              VehiclesLane2Distance.push_back(abs(check_car_s - car_s));
+                              VehiclesLane2Speed.push_back(check_speed);
+                          }
+                      }
+                  }
+                  /*
+                  for (int i=0;i<(VehiclesLane0Distance.size()-1);i++){
+                      double gap=abs(VehiclesLane0Distance[i+1]-VehiclesLane0Distance[i]);
+                      if (gap>=30) {
+                          Lane0Gaps.push_back(gap);
+                      }
+                  }
+                  for (int i=0;i<(VehiclesLane1Distance.size()-1);i++){
+                      double gap=abs(VehiclesLane1Distance[i+1]-VehiclesLane1Distance[i]);
+                      if (gap>=30) {
+                          Lane1Gaps.push_back(gap);
+                      }
+                  }
+                  for (int i=0;i<(VehiclesLane2Distance.size()-1);i++){
+                      double gap=abs(VehiclesLane2Distance[i+1]-VehiclesLane2Distance[i]);
+                      if (gap>=30) {
+                          Lane2Gaps.push_back(gap);
+                      }
+                  }
+*/
+                  // If a lane next to the lane our car is in is free, the lane change is possible
+                  if ((lane == 0) && (VehiclesLane1Distance.size() == 0)) {
+                      LaneChangePossible = true;
+                  } else if ((lane == 1) &&
+                             ((VehiclesLane0Distance.size() == 0) || (VehiclesLane2Distance.size() == 0))) {
+                      LaneChangePossible = true;
+                  } else if ((lane == 2) && (VehiclesLane1Distance.size() == 0)) {
+                      LaneChangePossible = true;
+                  } else {
+                      LaneChangePossible = false;
+                  }
+
+                  // if the lane change is not possible because the lanes are not empty, check the gap sizes and reduce speed to avoid collision with vehicle in front
+                  if (LaneChangePossible = false) {
+                      max_speed -= 0.35;
+                  }
+                  else if(LaneChangePossible=true){
+
                   }
               }
-          }
-          if (TooClose){
-              max_speed-=0.224;
-          }
-          else if(max_speed<49.5){
-              max_speed+=0.224;
-          }
+              //If the vehicle in front is not too close to our vehicle and our car is to slow, increase speed until 49,5mph
+                  if (max_speed < 49.5) {
+                      max_speed += 0.35;
+                  }
+
 
 
           vector<double>points_path_x;
