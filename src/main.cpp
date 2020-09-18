@@ -380,7 +380,7 @@ int main() {
     std::cout << "Listening to port " << port << std::endl;
   } else {
     std::cerr << "Failed to listen to port" << std::endl;
-    retur  -1;
+    return  -1;
   }
   
   h.run();
