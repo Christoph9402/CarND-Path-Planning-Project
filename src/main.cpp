@@ -128,6 +128,7 @@ int main() {
                     if ((check_car_s > car_s) && ((check_car_s - car_s) < 30)) {
                         //max_speed=29.5;
                         TooClose = true;
+                        std::cout<<"Vehicle in front is too close!\n";
                     }
                 }
             }
@@ -155,6 +156,10 @@ int main() {
                         if (check_car_s < 50) {
                             VehiclesLane0Distance.push_back(abs(check_car_s - car_s));
                             VehiclesLane1Speed.push_back(check_speed);
+                            std::cout<<"Lane 0 NOT empty\n";
+                        }
+                        else{
+                            std::cout<<"Lane 0 empty\n";
                         }
 
 
@@ -167,6 +172,10 @@ int main() {
                         if (check_car_s < 50) {
                             VehiclesLane1Distance.push_back(abs(check_car_s - car_s));
                             VehiclesLane1Speed.push_back(check_speed);
+                            std::cout<<"Lane 1 NOT empty\n";
+                        }
+                        else{
+                            std::cout<<"Lane 1 empty\n";
                         }
 
                     } else if (d < (12) && d > (8)) {
@@ -178,6 +187,10 @@ int main() {
                         if (check_car_s < 50) {
                             VehiclesLane2Distance.push_back(abs(check_car_s - car_s));
                             VehiclesLane2Speed.push_back(check_speed);
+                            std::cout<<"Lane 2 NOT empty\n";
+                        }
+                        else{
+                            std::cout<<"Lane 2 empty\n";
                         }
                     }
                 }
@@ -208,6 +221,7 @@ int main() {
                         max_speed += 0.35;
                     }
                     lane=1;
+                    std::cout<<"Change Lane to lane 1\n";
                 } else if ((lane == 1) && ((VehiclesLane0Distance.size() == 0) || (VehiclesLane2Distance.size() == 0))) {
                     LaneChangePossible0 = true;
                     LaneChangePossible2 = true;
@@ -215,17 +229,20 @@ int main() {
                         max_speed += 0.35;
                     }
                     lane=0;
+                    std::cout<<"Change Lane to lane 0\n";
                 } else if ((lane == 2) && (VehiclesLane1Distance.size() == 0)) {
                     LaneChangePossible1 = true;
                     if (max_speed < 49.5) {
                         max_speed += 0.35;
                     }
                     lane=1;
+                    std::cout<<"Change Lane to lane 1\n";
                 } else {
                     LaneChangePossible0 = false;
                     LaneChangePossible1 = false;
                     LaneChangePossible2 = false;
                     max_speed -= 0.35;
+                    std::cout<<"Stay in lane.\n";
                 }
 
                 // if the lane change is not possible because the lanes are not empty, check the gap sizes and reduce speed to avoid collision with vehicle in front
