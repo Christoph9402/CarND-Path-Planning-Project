@@ -125,7 +125,7 @@ int main() {
 
                     check_car_s += ((double) previous_size * 0.02 * check_speed);
 
-                    if ((check_car_s > car_s) && ((check_car_s - car_s) < 30)) {
+                    if ((check_car_s > car_s) && ((check_car_s - car_s) < 40)) {
                         //max_speed=29.5;
                         TooClose = true;
                         std::cout<<"Vehicle in front is too close!\n";
@@ -134,68 +134,74 @@ int main() {
             }
             if (TooClose) {
 
-                vector<double> VehiclesLane0Distance;
-                vector<double> VehiclesLane0Speed;
-                vector<double> Lane0Gaps;
-                vector<double> VehiclesLane1Distance;
-                vector<double> VehiclesLane1Speed;
-                vector<double> Lane1Gaps;
-                vector<double> VehiclesLane2Distance;
-                vector<double> VehiclesLane2Speed;
-                vector<double> Lane2Gaps;
+                vector<double> VehiclesLane0;
+                vector<double> VehiclesLane1;
+                vector<double> VehiclesLane2;
                 for (int i = 0; i < sensor_fusion.size(); i++) {
                     float d = sensor_fusion[i][6];
                     //Check, if car is in lane 0
                     if (d < (4) && d > (0)) {
-                        double vx = sensor_fusion[i][3];
-                        double vy = sensor_fusion[i][4];
-                        double check_speed = sqrt(vx * vx + vy * vy);
                         double check_car_s = sensor_fusion[i][5];
-                        check_car_s += ((double) previous_size * 0.02 * check_speed);
                         //Check, if the vehicle in lane 0 is within a distance of 50m
-                        if (check_car_s < 30) {
-                            VehiclesLane0Distance.push_back(abs(check_car_s - car_s));
-                            VehiclesLane1Speed.push_back(check_speed);
+                        if ((check_car_s > car_s) &&(check_car_s- car_s) < 40) {
+                            VehiclesLane0.push_back(i);
                             std::cout<<"Lane 0 NOT empty\n";
                         }
                         else{
                             std::cout<<"Lane 0 empty\n";
                         }
-                        std::cout<<"Nr. Vehicels in lane 0: " + VehiclesLane0Distance.size()<< "\n";
+                        std::cout<<"Nr. Vehicels in lane 0: " + VehiclesLane0.size()<< "\n";
 
 
                     } else if (d < (8) && d > (4)) {
-                        double vx = sensor_fusion[i][3];
-                        double vy = sensor_fusion[i][4];
-                        double check_speed = sqrt(vx * vx + vy * vy);
                         double check_car_s = sensor_fusion[i][5];
-                        check_car_s += ((double) previous_size * 0.02 * check_speed);
-                        if (check_car_s < 30) {
-                            VehiclesLane1Distance.push_back(abs(check_car_s - car_s));
-                            VehiclesLane1Speed.push_back(check_speed);
+                        if ((check_car_s > car_s) &&(check_car_s-car_s) < 40) {
+                            VehiclesLane1.push_back(i);
+
                             std::cout<<"Lane 1 NOT empty\n";
                         }
                         else{
                             std::cout<<"Lane 1 empty\n";
                         }
-                        std::cout<<"Nr. Vehicels in lane 1: " + VehiclesLane1Distance.size()<< "\n";
+                        std::cout<<"Nr. Vehicels in lane 1: " + VehiclesLane1.size()<< "\n";
                     } else if (d < (12) && d > (8)) {
-                        double vx = sensor_fusion[i][3];
-                        double vy = sensor_fusion[i][4];
-                        double check_speed = sqrt(vx * vx + vy * vy);
                         double check_car_s = sensor_fusion[i][5];
-                        check_car_s += ((double) previous_size * 0.02 * check_speed);
-                        if (check_car_s < 30) {
-                            VehiclesLane2Distance.push_back(abs(check_car_s - car_s));
-                            VehiclesLane2Speed.push_back(check_speed);
+                        if ((check_car_s > car_s) &&(check_car_s-car_s) < 40) {
+                            VehiclesLane2.push_back(i);
                             std::cout<<"Lane 2 NOT empty\n";
                         }
                         else{
                             std::cout<<"Lane 2 empty\n";
                         }
-                        std::cout<<"Nr. Vehicels in lane 2: " + VehiclesLane2Distance.size() << "\n";
+                        std::cout<<"Nr. Vehicels in lane 2: " + VehiclesLane2.size() << "\n";
                     }
                 }
+
+                if((lane==0)&&(VehiclesLane1.empty())){
+                    lane++;
+                }
+                else if ((lane==0)&&(!VehiclesLane1.empty())&&(VehiclesLane2.empty())){
+                    lane+2;
+                }
+                else if((lane==1)&&(VehiclesLane0.empty())&&(!VehiclesLane2.empty())){
+                    lane--;
+                }
+                else if((lane==1)&&(VehiclesLane2.empty())&&(!VehiclesLane0.empty())){
+                    lane++;
+                }
+                else if((lane==1)&&(VehiclesLane0.empty())&&(VehiclesLane2.empty())){
+                    lane--;
+                }
+                else if ((lane==2)&&(VehiclesLane1.empty())){
+                    lane--;
+                }
+                else if ((lane==2)&&(!VehiclesLane1.empty())&&(VehiclesLane0.empty())){
+                    lane-2;
+                }
+                else if((!VehiclesLane0.empty())&&(!VehiclesLane1.empty())&&(!VehiclesLane2.empty())){
+                    lane=lane;
+                }
+
 /*
                 for (int i=0;i<(VehiclesLane0Distance.size()-1);i++){
                     double gap=abs(VehiclesLane0Distance[i+1]-VehiclesLane0Distance[i]);
@@ -216,23 +222,29 @@ int main() {
                     }
                 }
 */
-               // If a lane next to the lane our car is in is free, the lane change is possible
-                if ((lane == 0) && (VehiclesLane1Distance.size() == 0)) {
+               /*// If a lane next to the lane our car is in is free, the lane change is possible
+                if ((lane == 0) && (VehiclesLane1.size() == 0)) {
                     LaneChangePossible1 = true;
                     if (max_speed < 49.5) {
                         max_speed += 0.35;
                     }
                     lane=1;
                     std::cout<<"Change Lane to lane 1\n";
-                } else if ((lane == 1) && ((VehiclesLane0Distance.size() == 0) || (VehiclesLane2Distance.size() == 0))) {
+                } else if ((lane == 1) && (VehiclesLane0.size() == 0)) {
                     LaneChangePossible0 = true;
-                    LaneChangePossible2 = true;
                     if (max_speed < 49.5) {
                         max_speed += 0.35;
                     }
                     lane=0;
                     std::cout<<"Change Lane to lane 0\n";
-                } else if ((lane == 2) && (VehiclesLane1Distance.size() == 0)) {
+                } else if ((lane == 1) && (VehiclesLane2.size() == 0)) {
+                    LaneChangePossible2 = true;
+                    if (max_speed < 49.5) {
+                        max_speed += 0.35;
+                    }
+                    lane=2;
+                    std::cout<<"Change Lane to lane 2\n";
+                } else if ((lane == 2) && (VehiclesLane1.size() == 0)) {
                     LaneChangePossible1 = true;
                     if (max_speed < 49.5) {
                         max_speed += 0.35;
@@ -246,6 +258,7 @@ int main() {
                     max_speed -= 0.35;
                     std::cout<<"Stay in lane.\n";
                 }
+*/
 
                 // if the lane change is not possible because the lanes are not empty, check the gap sizes and reduce speed to avoid collision with vehicle in front
                 //if ((LaneChangePossible0 = false) && (LaneChangePossible1 = false) && (LaneChangePossible2 = false)) {
