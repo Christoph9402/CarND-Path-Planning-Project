@@ -140,22 +140,20 @@ int main() {
                 for (int i = 0; i < sensor_fusion.size(); i++) {
                     float d = sensor_fusion[i][6];
                     //Check, if car is in lane 0
-                    if (d < (4) && d > (0)) {
+                    if (d <= (4) && d > (0)) {
                         double check_car_s = sensor_fusion[i][5];
                         //Check, if the vehicle in lane 0 is within a distance of 50m
-                        if ((check_car_s > car_s) &&(check_car_s- car_s) < 40) {
+                        if (((check_car_s > car_s) && ((check_car_s-car_s) < 50))||((check_car_s <= car_s) && ((check_car_s-car_s) >20))) {
                             VehiclesLane0.push_back(i);
                             std::cout<<"Lane 0 NOT empty\n";
                         }
                         else{
                             std::cout<<"Lane 0 empty\n";
                         }
-                        std::cout<<"Nr. Vehicels in lane 0: " + VehiclesLane0.size()<< "\n";
 
-
-                    } else if (d < (8) && d > (4)) {
+                    } else if (d <= (8) && d > (4)) {
                         double check_car_s = sensor_fusion[i][5];
-                        if ((check_car_s > car_s) &&(check_car_s-car_s) < 40) {
+                        if (((check_car_s > car_s) && ((check_car_s-car_s) < 50))||((check_car_s <= car_s) && ((check_car_s-car_s) >20))) {
                             VehiclesLane1.push_back(i);
 
                             std::cout<<"Lane 1 NOT empty\n";
@@ -163,43 +161,54 @@ int main() {
                         else{
                             std::cout<<"Lane 1 empty\n";
                         }
-                        std::cout<<"Nr. Vehicels in lane 1: " + VehiclesLane1.size()<< "\n";
-                    } else if (d < (12) && d > (8)) {
+                    } else if (d <= (12) && d > (8)) {
                         double check_car_s = sensor_fusion[i][5];
-                        if ((check_car_s > car_s) &&(check_car_s-car_s) < 40) {
+                        if (((check_car_s > car_s) && ((check_car_s-car_s) < 50))||((check_car_s <= car_s) && ((check_car_s-car_s) >20))) {
                             VehiclesLane2.push_back(i);
                             std::cout<<"Lane 2 NOT empty\n";
                         }
                         else{
                             std::cout<<"Lane 2 empty\n";
                         }
-                        std::cout<<"Nr. Vehicels in lane 2: " + VehiclesLane2.size() << "\n";
                     }
                 }
 
                 if((lane==0)&&(VehiclesLane1.empty())){
                     lane++;
+                    if (max_speed < 49.5) {
+                        max_speed += 0.35;}
                 }
                 else if ((lane==0)&&(!VehiclesLane1.empty())&&(VehiclesLane2.empty())){
+                    max_speed-=0.35;
                     lane+2;
                 }
                 else if((lane==1)&&(VehiclesLane0.empty())&&(!VehiclesLane2.empty())){
                     lane--;
+                    if (max_speed < 49.5) {
+                        max_speed += 0.35;}
                 }
                 else if((lane==1)&&(VehiclesLane2.empty())&&(!VehiclesLane0.empty())){
                     lane++;
+                    if (max_speed < 49.5) {
+                        max_speed += 0.35;}
                 }
                 else if((lane==1)&&(VehiclesLane0.empty())&&(VehiclesLane2.empty())){
                     lane--;
+                    if (max_speed < 49.5) {
+                        max_speed += 0.35;}
                 }
                 else if ((lane==2)&&(VehiclesLane1.empty())){
                     lane--;
+                    if (max_speed < 49.5) {
+                        max_speed += 0.35;}
                 }
                 else if ((lane==2)&&(!VehiclesLane1.empty())&&(VehiclesLane0.empty())){
+                    max_speed-=0.35;
                     lane-2;
                 }
                 else if((!VehiclesLane0.empty())&&(!VehiclesLane1.empty())&&(!VehiclesLane2.empty())){
                     lane=lane;
+                    max_speed -= 0.35;
                 }
 
 /*
