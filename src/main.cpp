@@ -153,7 +153,7 @@ int main() {
                         double check_car_s = sensor_fusion[i][5];
                         check_car_s += ((double) previous_size * 0.02 * check_speed);
                         //Check, if the vehicle in lane 0 is within a distance of 50m
-                        if (check_car_s < 25) {
+                        if (check_car_s < 30) {
                             VehiclesLane0Distance.push_back(abs(check_car_s - car_s));
                             VehiclesLane1Speed.push_back(check_speed);
                             std::cout<<"Lane 0 NOT empty\n";
@@ -161,7 +161,7 @@ int main() {
                         else{
                             std::cout<<"Lane 0 empty\n";
                         }
-                        std::cout<<"Nr. Vehicels in lane 0: " + VehiclesLane0Distance.size();
+                        std::cout<<"Nr. Vehicels in lane 0: " + VehiclesLane0Distance.size()<< "\n";
 
 
                     } else if (d < (8) && d > (4)) {
@@ -170,7 +170,7 @@ int main() {
                         double check_speed = sqrt(vx * vx + vy * vy);
                         double check_car_s = sensor_fusion[i][5];
                         check_car_s += ((double) previous_size * 0.02 * check_speed);
-                        if (check_car_s < 25) {
+                        if (check_car_s < 30) {
                             VehiclesLane1Distance.push_back(abs(check_car_s - car_s));
                             VehiclesLane1Speed.push_back(check_speed);
                             std::cout<<"Lane 1 NOT empty\n";
@@ -178,14 +178,14 @@ int main() {
                         else{
                             std::cout<<"Lane 1 empty\n";
                         }
-                        std::cout<<"Nr. Vehicels in lane 1: " + VehiclesLane1Distance.size();
+                        std::cout<<"Nr. Vehicels in lane 1: " + VehiclesLane1Distance.size()<< "\n";
                     } else if (d < (12) && d > (8)) {
                         double vx = sensor_fusion[i][3];
                         double vy = sensor_fusion[i][4];
                         double check_speed = sqrt(vx * vx + vy * vy);
                         double check_car_s = sensor_fusion[i][5];
                         check_car_s += ((double) previous_size * 0.02 * check_speed);
-                        if (check_car_s < 25) {
+                        if (check_car_s < 30) {
                             VehiclesLane2Distance.push_back(abs(check_car_s - car_s));
                             VehiclesLane2Speed.push_back(check_speed);
                             std::cout<<"Lane 2 NOT empty\n";
@@ -193,7 +193,7 @@ int main() {
                         else{
                             std::cout<<"Lane 2 empty\n";
                         }
-                        std::cout<<"Nr. Vehicels in lane 2: " + VehiclesLane2Distance.size();
+                        std::cout<<"Nr. Vehicels in lane 2: " + VehiclesLane2Distance.size() << "\n";
                     }
                 }
 /*
@@ -257,7 +257,7 @@ int main() {
                 //}
 
 
-                max_speed -= 0.35;
+                //max_speed -= 0.35;
             }
             //If the vehicle in front is not too close to our vehicle and our car is to slow, increase speed until 49,5mph
             else if (max_speed < 49.5) {
