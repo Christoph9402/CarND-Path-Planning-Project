@@ -142,7 +142,7 @@ int main() {
                 if (d <= (4) && d > (0)) {
                     double check_car_s = sensor_fusion[i][5];
                     //Check, if the vehicle in lane 0 is within a distance of 40m in front and 20m behind
-                    if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && (abs(check_car_s-car_s) <20))) {
+                    if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && 0 <= (abs(check_car_s-car_s) <10))) {
                         //Append vehicle to the vehicleslane0 list
                         VehiclesLane0.push_back(i);
                         //std::cout<<"Lane 0 NOT empty\n";
@@ -152,7 +152,7 @@ int main() {
 
                     double check_car_s = sensor_fusion[i][5];
                     //Check, if the vehicle in lane 1 is within a distance of 40m in front and 20m behind
-                    if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && (abs(check_car_s-car_s) <20))) {
+                    if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && 0 <= (abs(check_car_s-car_s) <10))) {
                         //Append vehicle to the vehicleslane1 list
                         VehiclesLane1.push_back(i);
                         //std::cout<<"Lane 1 NOT empty\n";
@@ -161,7 +161,7 @@ int main() {
                 } else if (d <= (12) && d > (8)) {
                     double check_car_s = sensor_fusion[i][5];
                     //Check, if the vehicle in lane 2 is within a distance of 40m in front and 20m behind
-                    if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && 0 <= (abs(check_car_s-car_s) <20))) {
+                    if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && 0 <= (abs(check_car_s-car_s) < 10))) {
                         //Append vehicle to the vehicleslane2 list
                         VehiclesLane2.push_back(i);
                         //std::cout<<"Lane 2 NOT empty\n";
@@ -225,75 +225,6 @@ int main() {
                     //
                 }
 
-/*
-                for (int i=0;i<(VehiclesLane0Distance.size()-1);i++){
-                    double gap=abs(VehiclesLane0Distance[i+1]-VehiclesLane0Distance[i]);
-                    if (gap>=30) {
-                        Lane0Gaps.push_back(gap);
-                    }
-                }
-                for (int i=0;i<(VehiclesLane1Distance.size()-1);i++){
-                    double gap=abs(VehiclesLane1Distance[i+1]-VehiclesLane1Distance[i]);
-                    if (gap>=30) {
-                        Lane1Gaps.push_back(gap);
-                    }
-                }
-                for (int i=0;i<(VehiclesLane2Distance.size()-1);i++){
-                    double gap=abs(VehiclesLane2Distance[i+1]-VehiclesLane2Distance[i]);
-                    if (gap>=30) {
-                        Lane2Gaps.push_back(gap);
-                    }
-                }
-*/
-               /*// If a lane next to the lane our car is in is free, the lane change is possible
-                if ((lane == 0) && (VehiclesLane1.size() == 0)) {
-                    LaneChangePossible1 = true;
-                    if (max_speed < 49.5) {
-                        max_speed += 0.35;
-                    }
-                    lane=1;
-                    std::cout<<"Change Lane to lane 1\n";
-                } else if ((lane == 1) && (VehiclesLane0.size() == 0)) {
-                    LaneChangePossible0 = true;
-                    if (max_speed < 49.5) {
-                        max_speed += 0.35;
-                    }
-                    lane=0;
-                    std::cout<<"Change Lane to lane 0\n";
-                } else if ((lane == 1) && (VehiclesLane2.size() == 0)) {
-                    LaneChangePossible2 = true;
-                    if (max_speed < 49.5) {
-                        max_speed += 0.35;
-                    }
-                    lane=2;
-                    std::cout<<"Change Lane to lane 2\n";
-                } else if ((lane == 2) && (VehiclesLane1.size() == 0)) {
-                    LaneChangePossible1 = true;
-                    if (max_speed < 49.5) {
-                        max_speed += 0.35;
-                    }
-                    lane=1;
-                    std::cout<<"Change Lane to lane 1\n";
-                } else {
-                    LaneChangePossible0 = false;
-                    LaneChangePossible1 = false;
-                    LaneChangePossible2 = false;
-                    max_speed -= 0.35;
-                    std::cout<<"Stay in lane.\n";
-                }
-*/
-
-                // if the lane change is not possible because the lanes are not empty, check the gap sizes and reduce speed to avoid collision with vehicle in front
-                //if ((LaneChangePossible0 = false) && (LaneChangePossible1 = false) && (LaneChangePossible2 = false)) {
-                //    max_speed -= 0.35;
-                //} else if ((LaneChangePossible0 = true) || (LaneChangePossible1 = true) || (LaneChangePossible2 = true)) {
-                //   if (max_speed < 49.5) {
-                //        max_speed += 0.35;
-                //    }
-                //}
-
-
-                //max_speed -= 0.35;
             }
             //If the vehicle in front is not too close to our vehicle and our car is to slow, increase speed until 49,5mph
             else if (max_speed < 49.5) {
@@ -396,19 +327,6 @@ int main() {
             // mkdir build && cd build
             // cmake .. && make
             // ./path_planning
-          /*
-          double dist_inc = 0.5;
-          for (int i = 0; i < 50; ++i) {
-              //calculate next values using Frenet coordinates
-              double next_s = car_s*(i+1)*dist_inc;
-              double next_d = 6;
-              //covert the net s and next  values to kartesian coordinates
-              vector<double> next_xy=getXY(next_s,next_d,map_waypoints_s,map_waypoints_x,map_waypoints_y);
-              // append next x and next y values to the vectors that make up the trajectory
-              next_x_vals.push_back(next_xy[0]);
-              next_y_vals.push_back(next_xy[1]);
-          }
-           */
 
             //################################ End of path planning code section############################
 
