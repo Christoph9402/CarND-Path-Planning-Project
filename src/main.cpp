@@ -109,18 +109,18 @@ int main() {
             }
 
             bool TooClose = false;
-            //bool LaneChangePossible0 = false;
-            //bool LaneChangePossible1 = false;
-            //bool LaneChangePossible2 = false;
+
             double speed_car_ahead = 0.0;
+            //Create 3 vectors that will store the indices of the vehicles nearby in every lane
             vector<double> VehiclesLane0;
             vector<double> VehiclesLane1;
             vector<double> VehiclesLane2;
+            //Loop through the sensor fusion list and extract d
             for (int i = 0; i < sensor_fusion.size(); i++) {
                 float d = sensor_fusion[i][6];
                 //Check, if car is in the same lane as ego vehicle
                 if (d < (2 + 4 * lane + 2) && d > (2 + 4 * lane - 2)) {
-                    //speed and s value of the car
+                    //speed and s value of the car in front
                     double vx = sensor_fusion[i][3];
                     double vy = sensor_fusion[i][4];
                     double check_speed = sqrt(vx * vx + vy * vy);
@@ -129,7 +129,7 @@ int main() {
                     check_car_s += ((double) previous_size * 0.02 * check_speed);
 
                     if ((check_car_s > car_s) && ((check_car_s - car_s) < 40)) {
-                        //max_speed=29.5;
+                        //Flag as too close and print in terminal
                         TooClose = true;
                         std::cout<<"Vehicle in front is too close!\n";
                     }
@@ -143,22 +143,26 @@ int main() {
                     double check_car_s = sensor_fusion[i][5];
                     //Check, if the vehicle in lane 0 is within a distance of 40m in front and 20m behind
                     if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && (abs(check_car_s-car_s) <20))) {
-                        //Append vehicle to the vahicleslane0 list
+                        //Append vehicle to the vehicleslane0 list
                         VehiclesLane0.push_back(i);
                         //std::cout<<"Lane 0 NOT empty\n";
                     }
-
+                //Check if the car is in lane 1
                 } else if (d <= (8) && d > (4)) {
+
                     double check_car_s = sensor_fusion[i][5];
+                    //Check, if the vehicle in lane 1 is within a distance of 40m in front and 20m behind
                     if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && (abs(check_car_s-car_s) <20))) {
-                        //Append vehicle to the vahicleslane1 list
+                        //Append vehicle to the vehicleslane1 list
                         VehiclesLane1.push_back(i);
                         //std::cout<<"Lane 1 NOT empty\n";
                     }
+                //Check if the car is in lane 2
                 } else if (d <= (12) && d > (8)) {
                     double check_car_s = sensor_fusion[i][5];
+                    //Check, if the vehicle in lane 2 is within a distance of 40m in front and 20m behind
                     if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && 0 <= (abs(check_car_s-car_s) <20))) {
-                        //Append vehicle to the vahicleslane2 list
+                        //Append vehicle to the vehicleslane2 list
                         VehiclesLane2.push_back(i);
                         //std::cout<<"Lane 2 NOT empty\n";
                     }
