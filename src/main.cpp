@@ -135,71 +135,74 @@ int main() {
                     }
                 }
             }
+            //Check every vehicle in the sensor fusion list and extract the vehicles d value
             for (int i = 0; i < sensor_fusion.size(); i++) {
                 float d = sensor_fusion[i][6];
                 //Check, if car is in lane 0
                 if (d <= (4) && d > (0)) {
                     double check_car_s = sensor_fusion[i][5];
-                    //Check, if the vehicle in lane 0 is within a distance of 50m
-                    if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 50))||((check_car_s <= car_s) && (abs(check_car_s-car_s) <20))) {
+                    //Check, if the vehicle in lane 0 is within a distance of 40m in front and 20m behind
+                    if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && (abs(check_car_s-car_s) <20))) {
+                        //Append vehicle to the vahicleslane0 list
                         VehiclesLane0.push_back(i);
                         //std::cout<<"Lane 0 NOT empty\n";
-                    }
-                    else{
-                        //std::cout<<"Lane 0 empty\n";
                     }
 
                 } else if (d <= (8) && d > (4)) {
                     double check_car_s = sensor_fusion[i][5];
-                    if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 50))||((check_car_s <= car_s) && (abs(check_car_s-car_s) <20))) {
+                    if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && (abs(check_car_s-car_s) <20))) {
+                        //Append vehicle to the vahicleslane1 list
                         VehiclesLane1.push_back(i);
-
                         //std::cout<<"Lane 1 NOT empty\n";
-                    }
-                    else{
-                        //std::cout<<"Lane 1 empty\n";
                     }
                 } else if (d <= (12) && d > (8)) {
                     double check_car_s = sensor_fusion[i][5];
-                    if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 50))||((check_car_s <= car_s) && (abs(check_car_s-car_s) <20))) {
+                    if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && 0 <= (abs(check_car_s-car_s) <20))) {
+                        //Append vehicle to the vahicleslane2 list
                         VehiclesLane2.push_back(i);
                         //std::cout<<"Lane 2 NOT empty\n";
-                    }
-                    else{
-                        //std::cout<<"Lane 2 empty\n";
                     }
                 }
             }
             if (TooClose) {
+                //define cases for lane changes
+                //if ego vehicle is in lane 0 and the vehicleslane1 vecor is empty, the ego vehicle can change lanes without problem. At the same time the ego vehicle can increase its speed, if it was lower before
                 if((lane==0)&&(VehiclesLane1.empty())){
+                    //increase lane by one --> change one lane to the right
                     lane++;
                     if (max_speed < 49.5) {
                         max_speed += 0.35;}
                 }
+                //if ego vehicle is in lane 0 and lane 1 is not empy, but lane 2 --> decrease speed to avoid max jerk and change lane
                 else if ((lane==0)&&(!VehiclesLane1.empty())&&(VehiclesLane2.empty())){
                     max_speed-=0.35;
                     lane+2;
                 }
+                //If ego vehicle is in lane 1 and the lane to the left is empty, while lane to the right is not --> change lane to left and if possible start increasing speed
                 else if((lane==1)&&(VehiclesLane0.empty())&&(!VehiclesLane2.empty())){
                     lane--;
                     if (max_speed < 49.5) {
                         max_speed += 0.35;}
                 }
+                //is ego vehicle is in lane 1 and the lane to the left is not empty, while lane to the right is --> change lane to right and if possible start increasing speed
                 else if((lane==1)&&(VehiclesLane2.empty())&&(!VehiclesLane0.empty())){
                     lane++;
                     if (max_speed < 49.5) {
                         max_speed += 0.35;}
                 }
+                //If ego vehicle is in lane 1 and lane 0 and lane 2 are empty, change lane to left and if possible increase speed
                 else if((lane==1)&&(VehiclesLane0.empty())&&(VehiclesLane2.empty())){
                     lane--;
                     if (max_speed < 49.5) {
                         max_speed += 0.35;}
                 }
+                //If ego vehicle is in lane 2 and lane 1 is empty, change lane to the left
                 else if ((lane==2)&&(VehiclesLane1.empty())){
                     lane--;
                     if (max_speed < 49.5) {
                         max_speed += 0.35;}
                 }
+                //If ego vehicle is in lane 2 and lane 1 is not empty, but lane 0 is --> change lane to lane 0
                 else if ((lane==2)&&(!VehiclesLane1.empty())&&(VehiclesLane0.empty())){
                     max_speed-=0.35;
                     lane-2;
@@ -207,10 +210,11 @@ int main() {
                 else if((!VehiclesLane0.empty())&&(!VehiclesLane1.empty())&&(!VehiclesLane2.empty())){
                     //Check speed of car in front and reduce speed until same speed as car in front
                     if(max_speed >= speed_car_ahead){
-                        max_speed -= 0.1;
+                        max_speed -= 0.35;
                     }
+                    //Try to maintain the speed of car in front
                     else if(max_speed < speed_car_ahead){
-                        max_speed += 0.1;
+                        max_speed += 0.35;
                     }
                     //Check speed of cars on other lanes
 
@@ -289,12 +293,14 @@ int main() {
             }
             //If the vehicle in front is not too close to our vehicle and our car is to slow, increase speed until 49,5mph
             else if (max_speed < 49.5) {
-                max_speed += 0.1;
+                max_speed += 0.35;
             }
+            //Print number of vehicles in lanes
             std::cout << "lane: " << lane << "\t Vehicles lane0: " << VehiclesLane0.size() << "\t vehicles lane 1: " << VehiclesLane1.size() << "\t Vehicles lane 2: " << VehiclesLane2.size() << "\t too close: " << TooClose << std::endl;
 
 
-
+//Code implemented that was presented in FaQ:
+//
           vector<double>points_path_x;
           vector<double>points_path_y;
           double ref_x = car_x;
