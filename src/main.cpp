@@ -128,7 +128,7 @@ int main() {
                     speed_car_ahead = check_speed;
                     check_car_s += ((double) previous_size * 0.02 * check_speed);
 
-                    if ((check_car_s > car_s) && ((check_car_s - car_s) < 40)) {
+                    if ((check_car_s > car_s) && ((check_car_s - car_s) < 30)) {
                         //Flag as too close and print in terminal
                         TooClose = true;
                         std::cout<<"Vehicle in front is too close!\n";
