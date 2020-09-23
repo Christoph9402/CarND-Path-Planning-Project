@@ -135,6 +135,7 @@ int main() {
                     }
                 }
             }
+
             //Check every vehicle in the sensor fusion list and extract the vehicles d value
             for (int i = 0; i < sensor_fusion.size(); i++) {
                 float d = sensor_fusion[i][6];
