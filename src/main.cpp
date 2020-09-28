@@ -282,7 +282,7 @@ int main() {
               double shift_y=points_path_y[i]-ref_y;
               points_path_x[i]=(shift_x*cos(0-ref_yaw)-shift_y*sin(0-ref_yaw));
               points_path_y[i]=(shift_x*sin(0-ref_yaw)+shift_y*cos(0-ref_yaw));
-          }
+            }
           tk::spline s;
 
           s.set_points(points_path_x,points_path_y);
