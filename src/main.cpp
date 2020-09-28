@@ -239,6 +239,7 @@ int main() {
 //Create 2 vectors for points that make the path
           vector<double>points_path_x;
           vector<double>points_path_y;
+          // Defining ref_x, ref_y as well as ref_yaw
           double ref_x = car_x;
           double ref_y = car_y;
           double ref_yaw = deg2rad(car_yaw);
