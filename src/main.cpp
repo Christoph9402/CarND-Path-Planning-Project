@@ -171,14 +171,14 @@ int main() {
             }
             if (TooClose) {
                 //define cases for lane changes
-                //if ego vehicle is in lane 0 and the vehicleslane1 vecor is empty, the ego vehicle can change lanes without problem. At the same time the ego vehicle can increase its speed, if it was lower before
+                //if ego vehicle is in lane 0 and the vehicleslane1 vector is empty, the ego vehicle can change lanes without problem. At the same time the ego vehicle can increase its speed, if it was lower before
                 if((lane==0)&&(VehiclesLane1.empty())){
                     //increase lane by one --> change one lane to the right
                     lane++;
                     if (max_speed < 49.5) {
                         max_speed += 0.35;}
                 }
-                //if ego vehicle is in lane 0 and lane 1 is not empy, but lane 2 --> decrease speed to avoid max jerk and change lane
+                //if ego vehicle is in lane 0 and lane 1 is not empty, but lane 2 --> decrease speed to avoid max jerk and change lane
                 else if ((lane==0)&&(!VehiclesLane1.empty())&&(VehiclesLane2.empty())){
                     max_speed-=0.35;
                     lane+2;
