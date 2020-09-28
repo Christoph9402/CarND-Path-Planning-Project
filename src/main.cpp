@@ -102,7 +102,7 @@ int main() {
              */
             int previous_size = previous_path_x.size();
 
-            // define starting lane and maximum speed
+
             if (previous_size > 0) {
                 car_s = end_path_s;
             }
