@@ -264,12 +264,6 @@ int main() {
               points_path_y.push_back(previous_ref_y);
               points_path_y.push_back(ref_y);
           }
-          /*for(int i=0;i<3;i++){
-              vector<double> next_waypoint=getXY(car_s+30*(i+1),((lane_width/2)+lane_width*lane),map_waypoints_s,map_waypoints_x,map_waypoints_y);
-              points_path_x.push_back(next_waypoint[0]);
-              points_path_y.push_back(next_waypoint[1]);
-          }
-           */
           vector<double> next_waypoint0=getXY(car_s+30,(2+4*lane),map_waypoints_s,map_waypoints_x,map_waypoints_y);
           points_path_x.push_back(next_waypoint0[0]);
           points_path_y.push_back(next_waypoint0[1]);
