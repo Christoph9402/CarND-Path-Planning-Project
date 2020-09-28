@@ -236,7 +236,7 @@ int main() {
 
 
 //Code implemented that was presented in FaQ:
-//
+//Create 2 vectors for points that make the path
           vector<double>points_path_x;
           vector<double>points_path_y;
           double ref_x = car_x;
