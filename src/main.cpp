@@ -142,7 +142,7 @@ int main() {
                 if (d <= (4) && d > (0)) {
                     double check_car_s = sensor_fusion[i][5];
                     //Check, if the vehicle in lane 0 is within a distance of 40m in front and 20m behind
-                    if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && 0 <= (abs(check_car_s-car_s) <10))) {
+                    if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && 0 <= (check_car_s-car_s) > -10)) {
                         //Append vehicle to the vehicleslane0 list
                         VehiclesLane0.push_back(i);
                         //std::cout<<"Lane 0 NOT empty\n";
@@ -152,7 +152,7 @@ int main() {
 
                     double check_car_s = sensor_fusion[i][5];
                     //Check, if the vehicle in lane 1 is within a distance of 40m in front and 20m behind
-                    if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && 0 <= (abs(check_car_s-car_s) <10))) {
+                    if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && 0 <= (check_car_s-car_s) > -10)) {
                         //Append vehicle to the vehicleslane1 list
                         VehiclesLane1.push_back(i);
                         //std::cout<<"Lane 1 NOT empty\n";
@@ -161,7 +161,7 @@ int main() {
                 } else if (d <= (12) && d > (8)) {
                     double check_car_s = sensor_fusion[i][5];
                     //Check, if the vehicle in lane 2 is within a distance of 40m in front and 20m behind
-                    if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && 0 <= (abs(check_car_s-car_s) < 10))) {
+                    if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && 0 <= (check_car_s-car_s) > -10)) {
                         //Append vehicle to the vehicleslane2 list
                         VehiclesLane2.push_back(i);
                         //std::cout<<"Lane 2 NOT empty\n";
