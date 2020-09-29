@@ -140,7 +140,12 @@ int main() {
                 float d = sensor_fusion[i][6];
                 //Check, if car is in lane 0
                 if (d <= (4) && d > (0)) {
+                    double vx = sensor_fusion[i][3];
+                    double vy = sensor_fusion[i][4];
+                    double check_speed = sqrt(vx * vx + vy * vy);
                     double check_car_s = sensor_fusion[i][5];
+                    speed_car_ahead = check_speed;
+                    check_car_s += ((double) previous_size * 0.02 * check_speed);
                     //Check, if the vehicle in lane 0 is within a distance of 40m in front and 20m behind
                     if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && abs(check_car_s-car_s) <10)) {
                         //Append vehicle to the vehicleslane0 list
@@ -149,8 +154,12 @@ int main() {
                     }
                 //Check if the car is in lane 1
                 } else if (d <= (8) && d > (4)) {
-
+                    double vx = sensor_fusion[i][3];
+                    double vy = sensor_fusion[i][4];
+                    double check_speed = sqrt(vx * vx + vy * vy);
                     double check_car_s = sensor_fusion[i][5];
+                    speed_car_ahead = check_speed;
+                    check_car_s += ((double) previous_size * 0.02 * check_speed);
                     //Check, if the vehicle in lane 1 is within a distance of 40m in front and 20m behind
                     if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && abs(check_car_s-car_s) < 10)) {
                         //Append vehicle to the vehicleslane1 list
@@ -159,7 +168,12 @@ int main() {
                     }
                 //Check if the car is in lane 2
                 } else if (d <= (12) && d > (8)) {
+                    double vx = sensor_fusion[i][3];
+                    double vy = sensor_fusion[i][4];
+                    double check_speed = sqrt(vx * vx + vy * vy);
                     double check_car_s = sensor_fusion[i][5];
+                    speed_car_ahead = check_speed;
+                    check_car_s += ((double) previous_size * 0.02 * check_speed);
                     //Check, if the vehicle in lane 2 is within a distance of 40m in front and 20m behind
                     if (((check_car_s > car_s) && (abs(check_car_s-car_s) < 40))||((check_car_s <= car_s) && abs(check_car_s-car_s) < 10)) {
                         //Append vehicle to the vehicleslane2 list
@@ -325,6 +339,8 @@ int main() {
             // mkdir build && cd build
             // cmake .. && make
             // ./path_planning
+            //mkdir build && cd build && cmake .. && make && ./path_planning
+
 
             //################################ End of path planning code section############################
 
