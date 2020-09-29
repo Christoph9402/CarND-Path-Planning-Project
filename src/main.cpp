@@ -168,8 +168,13 @@ int main() {
                     }
                 }
             }
+            //Print number of vehicles in lanes
+            std::cout << "lane: " << lane << "\t Vehicles lane0: " << VehiclesLane0.size() << "\t vehicles lane 1: " << VehiclesLane1.size() << "\t Vehicles lane 2: " << VehiclesLane2.size() << "\t too close: " << TooClose << std::endl;
+
+
             if (TooClose) {
                 //define cases for lane changes
+
                 //if ego vehicle is in lane 0 and the vehicleslane1 vector is empty, the ego vehicle can change lanes without problem. At the same time the ego vehicle can increase its speed, if it was lower before
                 if((lane==0)&&(VehiclesLane1.empty())){
                     //increase lane by one --> change one lane to the right
@@ -230,8 +235,6 @@ int main() {
             else if (max_speed < 49.5) {
                 max_speed += 0.35;
             }
-            //Print number of vehicles in lanes
-            std::cout << "lane: " << lane << "\t Vehicles lane0: " << VehiclesLane0.size() << "\t vehicles lane 1: " << VehiclesLane1.size() << "\t Vehicles lane 2: " << VehiclesLane2.size() << "\t too close: " << TooClose << std::endl;
 
 
 //Code implemented that was presented in FaQ:
