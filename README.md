@@ -1,6 +1,17 @@
 # CarND-Path-Planning-Project
 Self-Driving Car Engineer Nanodegree Program
    
+   The objective of the Path Planning project is to develop a code that creates trajectories that a vehicle follows along a track inside a simulator. The track has a length of 4.32 miles and must be completed without incidents such as accidents or leaving the lane. In addition, the speed limit of 50 mph must not be exceeded. The maximum acceleration must be less than 10 m/s^2 and jerk less than 10 m/s^3. The car should stay within one lane and only leave this lane if a lane change makes sense. This lane change should be performed when a car in front of the ego-vehicle is driving too slowly and another lane is free for the ego-vehicle to change into.
+Without an implemented code, the vehicle is initially parked on the middle lane of the track and does not drive off. To fix this I used the FaQ video by Udacity as a guide. To generate the trajectories an integer variable "lane" had to be initialized with the value 1. This indicates the lane in which the ego vehicle is located. The left lane is lane=0, the middle lane=1 and the right lane lane = 2. I also defined a variable "max_speed" which I set to 0. Next the data for the localization of the vehicle are read out - the x- and y-position of the vehicle and the frenet coordinates s and d. Also the angle of the vehicle and the speed. "previous_path_x" and "previous_path_y" contain the data of the previous path. Furthermore, the last s and d values of the previous path are read. "Sensor fusion" contains data about all vehicles with the same direction of travel.
+An integer variable "previous_size" is created with the length of previous_path_x as value. Then it is checked whether this newly created integer variable is greater than zero, which indicates that a previous path with waypoints exists. If this is the case, the variable car_s gets the value of the last value from the previous path. After this if loop a boolean variable "TooClose" is defined and set to False. Three vectors - VehiclesLane0, VeiclesLane1 and VehiclesLane2 - were created. These vectors will later be used to split up the vehicles of the “sensor_fusion” list, so that it is easy to get the number of vehicles on each lane.  
+Afterwards every entry of the sensor_fusion list is processed in a for loop. It is checked what d value the i vehicle has. Because these are frenet coordinates a constant d means that the lane remains constant. According to the project requirements, one lane is 4 meters wide. It is checked if the vehicle i is in the same lane as the ego vehicle, using an if condition. If this is the case, the velocity data of the vehicle in front is read and the speed is calculated. In a subsequent if statement it is checked if the distance of the vehicle in front is less than 30 meters and if the vehicle is in front of the ego vehicle. If this is the case the boolean variable "TooClose" is set to true.  
+After all vehicles in the sensor_fusion list have been checked, the list is searched again with a for loop and the vehicles are assigned to the tracks. However, only vehicles that are 40 meters in front of the ego vehicle or 10 meters behind the vehicle are added to the list. As distance the difference of the s values is used to neglect the distances in the direction. If one of the conditions applies to the ith vehicle, it is added to the respective vector.  
+After passing this loop it is specified what happens if a vehicle in front is too close in the same lane, i.e. if TooClose is true. if this is the case Different situations are checked using if operations. In the first case the vehicle is on the left lane and the middle lane is empty. This is verified by checking if the vector containing the vehicles in the middle lane is empty. If this is the case, the integer variable is increased by 1 - thus the ego vehicle moves one lane to the right.  
+If the ego vehicle speed is less than 49.5mph, the speed is increased by 0.35 because the overtaking manoeuvre is performed. In the second case it is checked if the vehicle is in the left lane, the middle lane is occupied and the right lane is free. In this case, the lane variable is increased by 2 - the ego vehicle moves into the right lane for overtaking. I have decided to reduce the speed in this case to avoid exceeding the maximum jerk. In the third case the ego vehicle is located in the middle lane and the left lane is free, while the right lane is not free. In this case the vehicle should change to the left lane, lane is reduced by 1. The speed is increased again if it is below 49.5. Similarly, in the next case, if the ego vehicle is driving in the middle lane and the right lane is free and occupies the left lane, the speed is increased again. In this case, the vehicle changes to the right. If the ego-vehicle is in the middle lane and both the left and right lanes are free, it does not matter which lane the ego-vehicle changes to. In this case I have decided that a lane change to the left should be performed. Analog to the case that the ego-drive is in the left lane, the action is also performed when it is in the right lane, however, changing lanes to the left. If all lanes are occupied by other vehicles, the lane is not changed, so the ego-vehicle has to wait until one of the lanes becomes free for overtaking. The speed is also reduced if the vehicle in front has a higher speed. If the own vehicle is slower than the vehicle in front, the speed increases. This way the same speed as the vehicle in front is tried to be reached.  
+After the if statement that describes what happens if TooClose is true, an else if statement checks if the ego vehicle is driving slower than the allowed 50 mph. I have chosen 49.5 as suggested in the FaQ so that there is a buffer and the maximum speed is never exceeded. After the if statement that describes what happens if TooClose is true, an else if statement checks if the ego vehicle is driving slower than the allowed 50 km/h. I have chosen 49.5 as suggested in the FaQ so that there is a buffer and the maximum speed is never exceeded. Afterwards the trajectory is created. First 2 vectors points_path_x and points_path_y are created. These vectors contain the points that later form the trajectory. After the definition of ref_x,ref_y and ref_yaw it is checked whether the variable "previous_size" that was defined at the beginning is smaller than 2. In this case the previous location of the ego vehicle is calculated from the x- and y- positions as well as the yaw_rate. The x and y points of this position are appended to the vector "points_path_x" and "points_path_y". If the if statement does not apply, ref_x is first given the value of the element from the vector previous_path_x at the position of previous size-1. This is also done for the y-values. Two double variables "previous_ref_x" and "previous_ref_y" are created. They get the value from the respective previous_path vector at the position previous_size-2. All points are assigned to the respective vectors "previous_path_x" and "previous_path_y".  
+Then 3 vectors are created - next_waypoint0, next_waypoint1 and next_waypoint2. For these vectors the frenet coordinates are converted into X-Y coordinates. When the function is called, car_s+30 (for next_waypoint0), car_s+60 (for next_waypoint1) and car_s+90 (for next_waypoint2) are taken in place of the s-value. For the d-value (2+4*lane) is used, since the current lane of the vehicle is always taken into account and the trajectory can be easily adapted if a lane change is required. The transformed x and y points are then attached to the vectors points_path_x and points_path_y.  
+In a following for loop every point in the "points_path_x" and "points_path_y" vectors is adjusted so that the reference angle of the vehicle is 0 at every position. Afterwards a spline is created using the header file "spline.h" (from https://kluge.in-chemnitz.de/opensource/spline/) . With the help of this file it should be guaranteed that the trajectory is a smooth one. The x and y values of points_path_x and points_path_y are added to this spline. Afterwards, two vectors next_x_vals and next_y_vals are each assigned the values of previous_path_x and previous_path_y to ensure that all points of the previous path are used at the beginning. Afterwards, two vectors next_x_vals and next_y_vals are each assigned the values of previous_path_x and previous_path_y to ensure that all points of the previous path are used at the beginning. Afterwards a target_x is defined. I have set this to 30m as suggested in the FaQ. The corresponding y-value to the target_x value is read out using s(target_x). To calculate the distance between the vehicle and a target point, the hypothenuse is calculated with target_x and target_y values. In a for loop a N is calculated, meaning how many points the spline has to be divided into. This distance is important because the vehicle passes one point every 0.02 seconds. If the distance between the points is too large, the vehicle will drive too fast. Afterwards the double values x-point and x-point are calculated as shown in the FaQ by converting them back to the global coordinate system and adding the values ref_y and ref_x. Finally, "x_point" and "y_point" are appended to the vectors "next_x_vals" and "next_y_vals". These then make up the trajectory.
+
 ### Simulator.
 You can download the Term3 Simulator which contains the Path Planning Project from the [releases tab (https://github.com/udacity/self-driving-car-sim/releases/tag/T3_v1.2).  
 
@@ -91,55 +102,3 @@ A really helpful resource for doing this project and creating smooth trajectorie
     cd uWebSockets
     git checkout e94b6e1
     ```
-
-## Editor Settings
-
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
-
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
-
-## Code Style
-
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
-
-## Project Instructions and Rubric
-
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
-
-
-## Call for IDE Profiles Pull Requests
-
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to ensure
-that students don't feel pressured to use one IDE or another.
-
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-
